@@ -9,73 +9,67 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: #f1f5f9; 
+            background: #f8fafc; 
             color: #0f172a;
             -webkit-font-smoothing: antialiased;
         }
         
-        .font-display { font-family: 'Outfit', sans-serif; }
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
 
-        /* --- 3D & Glow UI Effects --- */
+        /* --- Bento Box UI Effects --- */
         .bento-card {
             background: #ffffff;
-            border-radius: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 32px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.05);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
+            overflow: visible; /* Quan trọng để bảng điểm danh nở ra */
         }
-        .bento-card:hover { box-shadow: 0 15px 50px -10px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8); transform: translateY(-2px); }
 
         .btn-modern {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex; justify-content: center; align-items: center;
             border-radius: 20px; font-weight: 700;
         }
-        .btn-modern:hover { transform: translateY(-3px); box-shadow: 0 12px 25px -8px rgba(99, 102, 241, 0.5); }
+        .btn-modern:hover { transform: translateY(-3px); box-shadow: 0 12px 25px -8px rgba(67, 24, 255, 0.35); }
         .btn-modern:active { transform: translateY(1px); }
 
-        /* Table Row Interactive */
-        .table-row-3d { transition: all 0.3s ease; border-radius: 16px; margin-bottom: 4px; border: 1px solid transparent; }
-        .table-row-3d:hover { 
-            background: #ffffff; 
-            transform: scale(1.01) translateX(4px); 
-            box-shadow: 0 8px 20px -6px rgba(0,0,0,0.08); 
-            border-color: #e2e8f0;
-            z-index: 10; position: relative;
-        }
-
         /* --- Animations --- */
-        .fade-in { animation: fadeIn 0.5s ease-out; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
         .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
         
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
         .stagger-1 { animation-delay: 0.1s; } .stagger-2 { animation-delay: 0.2s; }
         .stagger-3 { animation-delay: 0.3s; } .stagger-4 { animation-delay: 0.4s; }
 
+        /* Modal Transition */
         .modal-overlay { transition: opacity 0.4s ease, backdrop-filter 0.4s ease; }
-        .modal-content { transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0.85) rotateX(10deg); opacity: 0; }
-        .modal-active .modal-content { transform: scale(1) rotateX(0); opacity: 1; }
+        .modal-content { transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0.9) translateY(20px); opacity: 0; }
+        .modal-active .modal-content { transform: scale(1) translateY(0); opacity: 1; }
 
         /* --- Layout & Utilities --- */
         #sidebar { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sidebar-collapsed { width: 100px !important; }
-        .sidebar-collapsed .nav-text, .sidebar-collapsed .sidebar-header-text, .sidebar-collapsed .sidebar-tool-text { opacity: 0; display: none; }
-        .sidebar-collapsed .nav-icon { margin: 0 auto; font-size: 1.5rem; }
-        .sidebar-collapsed .nav-item { justify-content: center; padding: 1.25rem 0; }
+        .sidebar-collapsed { width: 96px !important; }
+        .sidebar-collapsed .nav-text, .sidebar-collapsed .sidebar-header-text { opacity: 0; display: none; }
+        .sidebar-collapsed .nav-icon { margin: 0 auto; font-size: 1.25rem; }
+        .sidebar-collapsed .nav-item { justify-content: center; padding: 1rem 0; }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 20px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Giải quyết dứt điểm rớt chữ đ ở Tổng quan */
-        .responsive-money-text {
+        .break-words-custom { word-wrap: break-word; overflow-wrap: break-word; hyphens: auto; }
+
+        /* Tránh rớt chữ đ */
+        .responsive-money {
             font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem); 
             line-height: 1.1; 
             white-space: nowrap; 
@@ -84,68 +78,70 @@
             width: 100%;
         }
 
-        /* --- BÁO CÁO XUẤT ẢNH NÉT CĂNG --- */
+        /* --- BÁO CÁO XUẤT ẢNH --- */
         .export-mode .no-export { display: none !important; }
         .export-mode .force-export { display: flex !important; }
         .export-mode { 
-            /* Cấu hình phá vỡ mọi giới hạn khung hiển thị để chụp full màn */
+            /* Phá vỡ toàn bộ cấu trúc để trải phẳng ảnh */
             position: absolute !important; top: 0 !important; left: 0 !important;
-            width: 1200px !important; height: auto !important; max-height: none !important;
-            padding: 50px !important; background: white !important; border-radius: 0 !important; 
-            box-shadow: none !important; transform: none !important; z-index: -9999 !important;
+            padding: 40px !important; background: white !important; border-radius: 0 !important; 
+            box-shadow: none !important; width: 1200px !important; height: auto !important;
+            transform: none !important; margin: 0 !important; z-index: -999 !important;
         }
-        .export-mode #attendance-table th { background: #f8fafc !important; color: #3730a3 !important; border-bottom: 2px solid #cbd5e1 !important; font-size: 17px !important; padding: 24px !important; }
-        .export-mode #attendance-table td { font-size: 17px !important; padding: 20px 24px !important; border-bottom: 1px solid #e2e8f0 !important; }
+        .export-mode #attendance-table th { background: #f8fafc !important; color: #1e1b4b !important; border-bottom: 2px solid #cbd5e1 !important; font-size: 18px !important; padding: 24px !important; }
+        .export-mode #attendance-table td { font-size: 18px !important; padding: 24px !important; border-bottom: 1px dashed #e2e8f0 !important; }
+        /* Reset chữ đỏ khi xuất ảnh cho lịch sự */
+        .export-mode .text-rose-500 { color: #0f172a !important; }
 
         /* Input Học phí cũ */
         .editable-debt {
-            border: 2px dashed #cbd5e1; padding: 8px 20px; border-radius: 16px; transition: all 0.3s; background: #f8fafc; width: auto; min-width: 150px; text-align: right;
+            border: 2px dashed #cbd5e1; padding: 6px 16px; border-radius: 16px; transition: all 0.3s; background: #f8fafc; width: 220px; text-align: right;
         }
         .editable-debt:hover, .editable-debt:focus {
-            border-style: solid; border-color: #6366f1; background: white; outline: none; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.25);
+            border-style: solid; border-color: #4f46e5; background: white; outline: none; box-shadow: 0 10px 20px -10px rgba(79, 70, 229, 0.2);
         }
     </style>
 </head>
 <body class="h-screen overflow-hidden flex">
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="w-[320px] bg-[#0f172a] flex flex-col z-30 shrink-0 m-4 mr-0 rounded-[32px] overflow-hidden shadow-2xl relative">
-        <div class="absolute -top-20 -left-20 w-64 h-64 bg-indigo-600 rounded-full blur-[80px] opacity-30 pointer-events-none"></div>
+    <aside id="sidebar" class="w-[300px] bg-[#1e1b4b] flex flex-col z-20 shrink-0 m-4 mr-0 rounded-[32px] overflow-hidden shadow-2xl relative">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-indigo-500 rounded-full blur-[80px] opacity-30 -mt-10 -mr-10 pointer-events-none"></div>
 
-        <div class="p-8 border-b border-white/10 flex items-center h-[120px] relative z-10">
-            <div class="w-14 h-14 rounded-[20px] bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-white shadow-lg shadow-indigo-500/40 shrink-0">
-                <i class="fas fa-gem text-2xl"></i>
+        <div class="p-8 border-b border-indigo-900/50 flex items-center h-[120px] relative z-10">
+            <div class="w-14 h-14 rounded-[20px] bg-gradient-to-br from-[#6366f1] to-[#818cf8] flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 shrink-0">
+                <i class="fas fa-layer-group text-2xl"></i>
             </div>
             <div class="ml-4 sidebar-header-text transition-all duration-300">
-                <h1 class="text-3xl font-extrabold text-white font-display tracking-tight">EduCore</h1>
-                <p class="text-xs font-bold text-indigo-300 mt-1 uppercase tracking-widest">Platform</p>
+                <h1 class="text-2xl font-bold text-white font-display tracking-tight">EduCore</h1>
+                <p class="text-[10px] font-bold text-indigo-300 mt-1 uppercase tracking-[2px]">Ecosystem</p>
             </div>
         </div>
 
-        <nav class="flex-1 overflow-y-auto p-6 space-y-3 select-none relative z-10" id="nav-container">
-            <a href="#" onclick="showView('dashboard')" id="nav-dash" class="nav-item flex items-center gap-4 p-4 rounded-[24px] transition-all duration-300 bg-gradient-to-r from-[#6366f1] to-[#4f46e5] text-white shadow-[0_10px_20px_rgba(79,70,229,0.3)] hover:shadow-[0_15px_30px_rgba(79,70,229,0.4)]">
-                <i class="fas fa-compass w-6 nav-icon text-center text-xl"></i> <span class="nav-text font-bold text-lg">Tổng Quan</span>
+        <nav class="flex-1 overflow-y-auto p-5 space-y-2 select-none relative z-10" id="nav-container">
+            <a href="#" onclick="showView('dashboard')" id="nav-dash" class="nav-item flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 bg-[#4f46e5] text-white shadow-[0_10px_20px_rgba(79,70,229,0.3)] hover:shadow-[0_15px_30px_rgba(79,70,229,0.4)]">
+                <i class="fas fa-chart-pie w-5 nav-icon text-center text-lg"></i> <span class="nav-text font-bold">Tổng Quan</span>
             </a>
             
             <div class="pt-8 pb-2 nav-text">
-                <p class="text-[11px] font-bold text-indigo-400/80 uppercase tracking-[3px] mb-4 px-4">Khoá Học Của Bạn</p>
-                <div id="classListMenu" class="space-y-2"></div>
+                <p class="text-[11px] font-bold text-indigo-300/70 uppercase tracking-[2px] mb-4 px-4">Lớp Học Của Bạn</p>
+                <div id="classListMenu" class="space-y-1"></div>
             </div>
 
             <div class="pt-8 pb-2 nav-text">
-                <p class="text-[11px] font-bold text-indigo-400/80 uppercase tracking-[3px] mb-4 px-4">Công Cụ</p>
-                <a href="#" onclick="showView('manage-classes')" id="nav-manage" class="nav-item flex items-center gap-4 p-4 rounded-[24px] transition-all duration-300 text-indigo-200 hover:bg-white/10 hover:text-white">
-                    <i class="fas fa-cogs w-6 nav-icon text-center text-xl"></i> <span class="nav-text font-bold text-lg">Quản lý Lớp học</span>
+                <p class="text-[11px] font-bold text-indigo-300/70 uppercase tracking-[2px] mb-4 px-4">Cấu Hình Hệ Thống</p>
+                <a href="#" onclick="showView('manage-classes')" id="nav-manage" class="nav-item flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 text-indigo-200 hover:bg-white/10 hover:text-white">
+                    <i class="fas fa-sliders-h w-5 nav-icon text-center text-lg"></i> <span class="nav-text font-bold">Quản lý Lớp học</span>
                 </a>
             </div>
         </nav>
 
-        <div class="p-6 border-t border-white/10 sidebar-tool-text relative z-10 bg-[#0f172a]">
-            <button onclick="exportData()" class="w-full mb-3 bg-white/5 hover:bg-[#6366f1] text-indigo-200 hover:text-white py-4 rounded-[20px] text-sm font-bold transition-all duration-300 flex items-center justify-center gap-3">
-                <i class="fas fa-cloud-download-alt text-lg"></i> Tải Backup Data
+        <div class="p-6 border-t border-indigo-900/50 sidebar-header-text relative z-10">
+            <button onclick="exportData()" class="w-full mb-3 bg-white/5 hover:bg-[#6366f1] text-indigo-200 hover:text-white py-3.5 rounded-[16px] text-sm font-bold transition-all flex items-center justify-center gap-2">
+                <i class="fas fa-download"></i> Tải Dữ liệu (Backup)
             </button>
-            <label class="w-full flex items-center justify-center gap-3 bg-white/5 hover:bg-emerald-500 text-indigo-200 hover:text-white py-4 rounded-[20px] text-sm font-bold transition-all duration-300 cursor-pointer">
-                <i class="fas fa-cloud-upload-alt text-lg"></i> Phục hồi Dữ liệu
+            <label class="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-emerald-500 text-indigo-200 hover:text-white py-3.5 rounded-[16px] text-sm font-bold transition-all cursor-pointer">
+                <i class="fas fa-upload"></i> Khôi phục Dữ liệu
                 <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
             </label>
         </div>
@@ -156,75 +152,78 @@
         <!-- Header -->
         <header class="h-[120px] flex items-center justify-between px-10 shrink-0 mx-4">
             <div class="flex items-center gap-6">
-                <button onclick="toggleSidebar()" class="w-14 h-14 bg-white rounded-[20px] flex items-center justify-center text-slate-400 hover:text-[#6366f1] hover:bg-indigo-50 shadow-sm transition-all duration-300">
-                    <i class="fas fa-align-left text-2xl"></i>
+                <!-- Hamburger -->
+                <button onclick="toggleSidebar()" class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-slate-400 hover:text-[#4f46e5] shadow-sm hover:shadow-md transition-all border border-slate-100">
+                    <i class="fas fa-bars text-xl"></i>
                 </button>
                 <div>
-                    <h2 id="currentViewTitle" class="text-4xl font-extrabold text-[#0f172a] font-display tracking-tight">Trang Chủ</h2>
-                    <p class="text-sm font-semibold text-slate-400 mt-1 uppercase tracking-wider">Hệ thống đồng bộ dữ liệu thời gian thực</p>
+                    <h2 id="currentViewTitle" class="text-4xl font-bold text-[#1e1b4b] font-display tracking-tight">Dashboard</h2>
+                    <p class="text-sm font-semibold text-slate-400 mt-1 uppercase tracking-wider">Cập nhật dữ liệu hệ thống</p>
                 </div>
             </div>
+            
             <div class="flex items-center gap-4">
-                <div class="flex items-center gap-3 text-[#6366f1] font-bold bg-indigo-50/80 px-6 py-4 rounded-2xl border border-indigo-100/50 shadow-sm">
-                    <i class="fas fa-calendar-alt"></i> <span id="currentDateDisplay"></span>
+                <div class="flex items-center gap-3 text-[#4f46e5] font-bold bg-white px-6 py-3.5 rounded-full shadow-sm border border-slate-100">
+                    <i class="fas fa-calendar-day"></i> <span id="currentDateDisplay"></span>
                 </div>
             </div>
         </header>
 
-        <!-- View Container -->
+        <!-- Khung View Container (Khu vực cuộn chính của toàn trang) -->
         <div id="viewContainer" class="flex-1 overflow-y-auto px-10 pb-10 relative">
             
             <!-- ================= DASHBOARD VIEW ================= -->
             <div id="view-dashboard" class="view-section fade-in max-w-[1600px] mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 mb-12">
-                    <div class="bento-card p-8 slide-up stagger-1 flex flex-col justify-between min-h-[160px]">
-                        <div class="flex items-center gap-4 mb-3">
-                            <div class="w-12 h-12 rounded-[16px] bg-blue-50 flex items-center justify-center text-blue-500 text-xl"><i class="fas fa-users"></i></div>
-                            <p class="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-widest leading-tight w-full break-words">Học Viên</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+                    <div class="bento-card p-8 slide-up stagger-1 flex flex-col justify-center min-h-[160px]">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-[16px] bg-[#eff6ff] flex items-center justify-center text-[#3b82f6] text-xl"><i class="fas fa-users"></i></div>
+                            <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-tight">Học Viên</p>
                         </div>
-                        <h3 class="text-5xl font-extrabold font-display text-[#0f172a]" id="dash-total-students">0</h3>
+                        <h3 class="text-5xl font-bold font-display text-[#1e1b4b]" id="dash-total-students">0</h3>
                     </div>
                     
-                    <div class="bento-card p-8 slide-up stagger-2 flex flex-col justify-between min-h-[160px]">
-                        <div class="flex items-center gap-4 mb-3">
-                            <div class="w-12 h-12 rounded-[16px] bg-emerald-50 flex items-center justify-center text-emerald-500 text-xl"><i class="fas fa-layer-group"></i></div>
-                            <p class="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-widest leading-tight w-full break-words">Phân Môn Đang Mở</p>
+                    <div class="bento-card p-8 slide-up stagger-2 flex flex-col justify-center min-h-[160px]">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-[16px] bg-[#f0fdf4] flex items-center justify-center text-[#22c55e] text-xl"><i class="fas fa-chalkboard"></i></div>
+                            <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-tight">Lớp Đang Mở</p>
                         </div>
-                        <h3 class="text-5xl font-extrabold font-display text-[#0f172a]" id="dash-total-classes">0</h3>
+                        <h3 class="text-5xl font-bold font-display text-[#1e1b4b]" id="dash-total-classes">0</h3>
                     </div>
                     
-                    <div class="bento-card p-8 slide-up stagger-3 flex flex-col justify-between min-h-[160px] border border-rose-100 bg-rose-50/30">
-                        <div class="flex items-center gap-4 mb-3">
+                    <!-- Sửa Tên Thẻ & Chống Rớt Chữ -->
+                    <div class="bento-card p-8 slide-up stagger-3 flex flex-col justify-center min-h-[160px] border border-rose-100 bg-rose-50/30">
+                        <div class="flex items-center gap-4 mb-4">
                             <div class="w-12 h-12 rounded-[16px] bg-rose-100 flex items-center justify-center text-rose-500 text-xl"><i class="fas fa-history"></i></div>
-                            <p class="text-xs lg:text-sm font-bold text-rose-400 uppercase tracking-widest leading-tight w-full break-words">Khoản Cũ Cần Thu</p>
+                            <p class="text-sm font-bold text-rose-400 uppercase tracking-widest leading-tight">Chưa Thanh Toán</p>
                         </div>
-                        <h3 class="responsive-money-text font-extrabold font-display text-rose-600" id="dash-total-debt" title="0 đ">0 đ</h3>
+                        <h3 class="responsive-money font-bold font-display text-rose-500" id="dash-total-debt" title="0 đ">0 đ</h3>
                     </div>
                     
-                    <div class="bento-card p-8 slide-up stagger-4 flex flex-col justify-between min-h-[160px] bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] border-transparent shadow-[0_15px_30px_rgba(99,102,241,0.25)]">
-                        <div class="flex items-center gap-4 mb-3">
+                    <div class="bento-card p-8 slide-up stagger-4 flex flex-col justify-center min-h-[160px] bg-gradient-to-br from-[#4f46e5] to-[#6366f1] border-transparent shadow-[0_15px_30px_rgba(79,70,229,0.3)]">
+                        <div class="flex items-center gap-4 mb-4">
                             <div class="w-12 h-12 rounded-[16px] bg-white/20 flex items-center justify-center text-white text-xl"><i class="fas fa-wallet"></i></div>
-                            <p class="text-xs lg:text-sm font-bold text-indigo-100 uppercase tracking-widest leading-tight w-full break-words">Dự Thu Khóa Này</p>
+                            <p class="text-sm font-bold text-indigo-100 uppercase tracking-widest leading-tight">Tổng Thu</p>
                         </div>
-                        <h3 class="responsive-money-text font-extrabold font-display text-white" id="dash-total-revenue" title="0 đ">0 đ</h3>
+                        <h3 class="responsive-money font-bold font-display text-white" id="dash-total-revenue" title="0 đ">0 đ</h3>
                     </div>
                 </div>
 
                 <div class="bento-card slide-up" style="animation-delay: 0.5s;">
-                    <div class="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <h3 class="text-2xl font-extrabold text-[#0f172a] font-display"><i class="fas fa-chart-bar text-[#6366f1] mr-3"></i>Thống Kê Tài Chính Lớp Học</h3>
+                    <div class="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                        <h3 class="text-2xl font-bold text-[#1e1b4b] font-display">Tài Chính Các Lớp Học</h3>
                     </div>
                     <div class="p-4 overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[800px]">
                             <thead>
                                 <tr class="text-slate-400 text-xs uppercase tracking-[2px] border-b border-slate-100">
-                                    <th class="p-6 font-bold pl-8">Tên Lớp Học</th>
+                                    <th class="p-6 font-bold pl-8">Phân Môn</th>
                                     <th class="p-6 font-bold text-center">Sĩ Số</th>
-                                    <th class="p-6 font-bold text-right">Khoản Cũ Cần Thu</th>
-                                    <th class="p-6 font-bold text-right pr-8">Dự Thu (Giá Trị Giảng Dạy)</th>
+                                    <th class="p-6 font-bold text-right">Chưa Thanh Toán</th>
+                                    <th class="p-6 font-bold text-right pr-8">Tổng Thu Giảng Dạy</th>
                                 </tr>
                             </thead>
-                            <tbody id="dash-class-stats" class="text-base font-semibold text-[#0f172a] divide-y divide-slate-50"></tbody>
+                            <tbody id="dash-class-stats" class="text-base font-semibold text-[#1e1b4b] divide-y divide-slate-50"></tbody>
                         </table>
                     </div>
                 </div>
@@ -232,18 +231,18 @@
 
             <!-- ================= MANAGE CLASSES VIEW ================= -->
             <div id="view-manage-classes" class="view-section hidden max-w-5xl mx-auto slide-up">
-                <div class="bento-card p-10 mb-8 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white border-transparent">
-                    <h3 class="text-3xl font-extrabold mb-8 font-display">Thiết Lập Lớp Mới</h3>
+                <div class="bento-card p-10 mb-8 bg-[#4f46e5] text-white border-transparent shadow-[0_15px_30px_rgba(79,70,229,0.2)]">
+                    <h3 class="text-3xl font-bold mb-8 font-display">Khởi Tạo Lớp Học</h3>
                     <form id="createClassForm" class="flex flex-col sm:flex-row gap-6 items-end" onsubmit="createClass(event)">
                         <div class="flex-1 w-full">
-                            <label class="block text-sm font-bold text-indigo-100 uppercase tracking-widest mb-3">Tên Phân Môn / Khóa Học</label>
-                            <input type="text" id="newClassName" required class="w-full bg-white/10 border-2 border-white/20 rounded-[24px] p-5 outline-none focus:border-white focus:bg-white/20 transition-all text-xl font-bold text-white placeholder-indigo-200/50" placeholder="VD: IELTS Intensive...">
+                            <label class="block text-sm font-bold text-indigo-200 uppercase tracking-widest mb-3">Tên Phân Môn / Khóa Học</label>
+                            <input type="text" id="newClassName" required class="w-full bg-white/10 border-2 border-white/20 rounded-[24px] p-5 outline-none focus:border-white focus:bg-white/20 transition-all text-xl font-bold text-white placeholder-indigo-300" placeholder="VD: IELTS Intensive...">
                         </div>
-                        <button type="submit" class="bg-white text-[#6366f1] px-10 py-5 rounded-[24px] btn-modern text-lg w-full sm:w-auto shadow-xl">Khởi Tạo</button>
+                        <button type="submit" class="bg-white text-[#4f46e5] px-12 py-5 rounded-[24px] btn-modern text-lg w-full sm:w-auto shadow-xl">Tạo Mới</button>
                     </form>
                 </div>
                 <div class="bento-card p-6">
-                    <div class="p-6 border-b border-slate-100"><h4 class="font-extrabold text-[#0f172a] text-2xl font-display ml-2">Cấu Trúc Hệ Thống Giáo Dục</h4></div>
+                    <div class="p-6 border-b border-slate-100"><h4 class="font-bold text-[#1e1b4b] text-2xl font-display ml-2">Cấu Trúc Hệ Thống Giáo Dục</h4></div>
                     <ul id="manage-class-list" class="divide-y divide-slate-100 text-lg mt-2"></ul>
                 </div>
             </div>
@@ -251,57 +250,58 @@
             <!-- ================= CLASS DETAIL VIEW ================= -->
             <div id="view-class-detail" class="view-section hidden slide-up max-w-[1600px] mx-auto">
                 
-                <div class="flex flex-wrap justify-between items-center mb-8 gap-6 bento-card p-6">
-                    <div class="flex items-center gap-6 min-w-0">
-                        <div class="w-20 h-20 bg-indigo-50 rounded-[24px] flex items-center justify-center text-[#6366f1] text-4xl font-bold shrink-0">
+                <div class="flex flex-wrap justify-between items-center mb-8 gap-4 bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-5">
+                        <div class="w-16 h-16 bg-[#eff6ff] rounded-[20px] flex items-center justify-center text-[#4f46e5] text-3xl font-bold shrink-0">
                             <i class="fas fa-folder-open"></i>
                         </div>
-                        <h2 id="detail-class-name" class="text-4xl lg:text-5xl font-extrabold text-[#0f172a] font-display tracking-tight break-words-custom">Tên lớp</h2>
+                        <h2 id="detail-class-name" class="text-4xl lg:text-5xl font-bold text-[#1e1b4b] font-display tracking-tight break-words-custom">Tên lớp</h2>
                     </div>
-                    <div class="flex gap-4 shrink-0">
-                        <button onclick="resetClassAttendance()" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-6 py-4 rounded-[24px] font-bold btn-modern flex items-center gap-3">
-                            <i class="fas fa-undo"></i> Tạo Tháng Mới
+                    <div class="flex gap-4">
+                        <button onclick="resetClassAttendance()" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-6 py-4 rounded-[20px] font-bold btn-modern flex items-center gap-3">
+                            <i class="fas fa-undo"></i> Bắt đầu Tháng Mới
                         </button>
-                        <button onclick="openAddStudentModal()" class="bg-[#0f172a] text-white px-8 py-4 rounded-[24px] font-bold btn-modern flex items-center gap-3">
+                        <button onclick="openAddStudentModal()" class="bg-[#1e1b4b] text-white px-8 py-4 rounded-[20px] font-bold btn-modern flex items-center gap-3">
                             <i class="fas fa-user-plus text-lg"></i> Thêm Học Viên
                         </button>
                     </div>
                 </div>
 
-                <!-- Tabs Học Sinh (Card Trượt) -->
+                <!-- Tabs Học Sinh -->
                 <div class="mb-8 overflow-x-auto hide-scrollbar pb-4 pt-2">
                     <div id="student-tabs" class="flex space-x-4 min-w-max px-2"></div>
                 </div>
 
-                <!-- BÁO CÁO HỌC TẬP (Vùng chụp ảnh) -->
-                <div id="report-export-area" class="bento-card overflow-hidden hidden mb-20 slide-up bg-white">
+                <!-- BÁO CÁO HỌC TẬP (Cả Bảng bung ra tự do) -->
+                <div id="report-export-area" class="bento-card hidden mb-20 slide-up bg-white">
                     
-                    <div class="p-8 md:p-12 border-b border-slate-100 flex flex-wrap justify-between items-center gap-8 bg-slate-50/50">
+                    <!-- Header Báo Cáo -->
+                    <div class="p-8 md:p-12 border-b border-slate-100 flex flex-wrap justify-between items-center gap-6 bg-slate-50/50">
                         <div class="flex items-center gap-8 min-w-0">
-                            <div class="h-[100px] w-[100px] rounded-[32px] bg-gradient-to-tr from-[#6366f1] to-[#a855f7] text-white flex items-center justify-center font-bold text-[3.5rem] shrink-0 shadow-lg shadow-indigo-500/30" id="stu-avatar">A</div>
+                            <div class="h-28 w-28 rounded-[32px] bg-gradient-to-tr from-[#4f46e5] to-[#a855f7] text-white flex items-center justify-center font-bold text-[4rem] shrink-0 shadow-xl shadow-indigo-500/20" id="stu-avatar">A</div>
                             <div class="min-w-0">
-                                <h3 class="font-extrabold text-[#0f172a] text-4xl lg:text-5xl font-display flex items-center gap-4">
+                                <h3 class="font-bold text-[#1e1b4b] text-4xl lg:text-[2.75rem] font-display flex items-center gap-4">
                                     <span id="stu-name-display" class="break-words-custom">Tên Học Viên</span>
-                                    <button onclick="openEditStudentModal()" class="text-slate-300 hover:text-[#6366f1] text-3xl no-export transition-colors shrink-0 bg-white shadow-sm w-12 h-12 rounded-xl flex justify-center items-center"><i class="fas fa-pen"></i></button>
+                                    <button onclick="openEditStudentModal()" class="text-slate-400 hover:text-[#4f46e5] text-3xl no-export transition-colors shrink-0 bg-white shadow-sm border border-slate-100 w-14 h-14 rounded-2xl flex justify-center items-center"><i class="fas fa-pen"></i></button>
                                 </h3>
-                                <p class="text-slate-500 mt-3 font-bold text-xl">Học phí: <span id="stu-fee-display" class="text-[#6366f1] font-black">0 đ</span> / buổi</p>
+                                <p class="text-slate-500 mt-4 font-bold text-xl uppercase tracking-wider">Học phí: <span id="stu-fee-display" class="text-[#4f46e5] font-black">0 đ</span> / buổi</p>
                             </div>
                         </div>
                         <div class="flex gap-4 no-export shrink-0">
-                            <button onclick="exportToImage()" class="bg-white border-2 border-slate-200 hover:border-[#6366f1] text-slate-700 hover:text-[#6366f1] px-8 py-4 rounded-[24px] font-bold btn-modern flex items-center gap-3">
-                                <i class="fas fa-camera text-xl"></i> Xuất Báo Cáo
+                            <button onclick="exportToImage()" class="bg-white border-2 border-slate-200 hover:border-[#4f46e5] text-slate-700 hover:text-[#4f46e5] px-8 py-5 rounded-[24px] font-bold btn-modern flex items-center gap-3 text-lg">
+                                <i class="fas fa-camera text-2xl"></i> Trích Xuất Ảnh
                             </button>
-                            <button onclick="openAddSessionModal()" class="bg-[#6366f1] text-white px-8 py-4 rounded-[24px] font-bold btn-modern flex items-center gap-3 shadow-lg shadow-indigo-500/30">
-                                <i class="fas fa-check-circle text-xl"></i> Điểm Danh
+                            <button onclick="openAddSessionModal()" class="bg-[#4f46e5] text-white px-10 py-5 rounded-[24px] font-bold btn-modern flex items-center gap-3 text-lg shadow-lg shadow-indigo-500/30">
+                                <i class="fas fa-check-circle text-2xl"></i> Ghi Nhận Buổi
                             </button>
                         </div>
                     </div>
 
-                    <!-- Bảng Điểm Danh Chống Tràn -->
-                    <div class="bg-white px-4 md:px-8 py-4">
-                        <h4 class="text-center font-extrabold text-3xl text-[#0f172a] mb-10 pt-10 hidden print-title uppercase tracking-[4px] font-display">Hồ Sơ Đánh Giá & Học Tập</h4>
-                        <div class="overflow-x-auto pb-4">
-                            <table class="w-full text-left border-collapse min-w-[900px]" id="attendance-table" style="table-layout: fixed;">
+                    <!-- Bảng Điểm Danh (Bung tự do không scroll lồng) -->
+                    <div class="bg-white">
+                        <h4 class="text-center font-bold text-[2rem] text-[#1e1b4b] mb-12 pt-12 hidden print-title uppercase tracking-[4px] font-display">Hồ Sơ Đánh Giá Học Tập</h4>
+                        <div class="w-full">
+                            <table class="w-full text-left border-collapse" id="attendance-table" style="table-layout: fixed;">
                                 <colgroup>
                                     <col style="width: 15%;">
                                     <col style="width: 20%;">
@@ -310,30 +310,30 @@
                                     <col class="no-export" style="width: 10%;">
                                 </colgroup>
                                 <thead>
-                                    <tr class="bg-[#f8fafc] text-slate-500 text-xs lg:text-sm tracking-widest uppercase border-y border-slate-100">
-                                        <th class="p-6 font-bold pl-8 rounded-tl-[24px]">Ngày học</th>
-                                        <th class="p-6 font-bold">Phân Môn / Kỹ năng</th>
-                                        <th class="p-6 font-bold">Nội dung bài</th>
-                                        <th class="p-6 font-bold">Đánh giá của Giáo viên</th>
-                                        <th class="p-6 font-bold text-center no-export pr-8 rounded-tr-[24px]">Thao tác</th>
+                                    <tr class="bg-[#f8fafc] text-slate-500 text-sm tracking-[2px] uppercase border-y border-slate-100">
+                                        <th class="p-8 font-bold pl-12">Ngày học</th>
+                                        <th class="p-8 font-bold">Phân Môn / Kỹ năng</th>
+                                        <th class="p-8 font-bold">Nội dung bài</th>
+                                        <th class="p-8 font-bold">Đánh giá của Giáo viên</th>
+                                        <th class="p-8 font-bold text-center no-export pr-12">Thao tác</th>
                                     </tr>
                                 </thead>
-                                <tbody id="attendance-table-body" class="divide-y divide-slate-100/80"></tbody>
+                                <tbody id="attendance-table-body" class="divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                     </div>
 
                     <!-- Tổng kết Tài chính Báo cáo -->
-                    <div class="bg-[#f8fafc] p-8 md:p-12 flex flex-col md:flex-row justify-end gap-10 md:gap-24 no-export force-export border-t border-slate-100">
+                    <div class="bg-[#f8fafc] p-10 md:p-14 flex flex-wrap justify-end gap-12 md:gap-24 no-export force-export border-t border-slate-200">
                         <div class="text-right">
-                            <p class="text-sm lg:text-base text-slate-400 uppercase font-bold tracking-widest mb-3">Học phí đợt này (<span id="stu-total-sessions">0</span> buổi)</p>
-                            <p class="responsive-money-text font-extrabold font-display text-[#1e1b4b] max-w-[400px]" id="stu-total-fee">0 đ</p>
+                            <p class="text-base text-slate-400 uppercase font-bold tracking-[2px] mb-3">Học phí đợt này (<span id="stu-total-sessions">0</span> buổi)</p>
+                            <p class="responsive-money font-bold font-display text-[#1e1b4b] max-w-[400px]" id="stu-total-fee">0 đ</p>
                         </div>
                         <div class="text-right md:pl-24 md:border-l-2 border-slate-200 relative">
-                            <p class="text-sm lg:text-base text-slate-400 uppercase font-bold tracking-widest mb-3 flex items-center gap-2 justify-end"><i class="fas fa-history text-slate-300"></i> Học phí cũ kỳ trước</p>
+                            <p class="text-base text-slate-400 uppercase font-bold tracking-[2px] mb-3 flex items-center gap-2 justify-end"><i class="fas fa-history text-slate-300"></i> Chưa Thanh Toán (Kỳ Trước)</p>
                             <div class="flex justify-end items-center">
-                                <input type="text" id="direct-debt-input" class="responsive-money-text font-extrabold font-display text-[#ef4444] editable-debt" value="0" onblur="updateDebtDirectly(this)" onfocus="this.value = this.value.replace(/\./g, '')">
-                                <span class="text-3xl lg:text-[2.5rem] font-extrabold font-display text-[#ef4444] ml-3">đ</span>
+                                <input type="text" id="direct-debt-input" class="responsive-money font-bold font-display text-rose-500 editable-debt" value="0" onblur="updateDebtDirectly(this)" onfocus="this.value = this.value.replace(/\./g, '')">
+                                <span class="text-4xl lg:text-[3rem] font-bold font-display text-rose-500 ml-4">đ</span>
                             </div>
                         </div>
                     </div>
@@ -344,24 +344,24 @@
 
     <!-- ================= MODALS ================= -->
     <!-- Modal Học Sinh -->
-    <div id="modal-student" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay opacity-0 pointer-events-none bg-slate-900/50 backdrop-blur-md">
-        <div class="bg-white rounded-[40px] w-full max-w-lg p-12 modal-content shadow-[0_30px_60px_rgba(0,0,0,0.15)] border border-white">
-            <h3 class="text-4xl font-extrabold font-display mb-10 text-[#0f172a]" id="student-modal-title">Hồ Sơ Học Viên</h3>
+    <div id="modal-student" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay opacity-0 pointer-events-none bg-slate-900/60 backdrop-blur-md">
+        <div class="bg-white rounded-[40px] w-full max-w-lg p-12 modal-content shadow-[0_30px_60px_rgba(0,0,0,0.15)] border border-slate-100">
+            <h3 class="text-4xl font-bold font-display mb-10 text-[#1e1b4b]" id="student-modal-title">Hồ Sơ Học Viên</h3>
             <form onsubmit="submitStudent(event)" class="space-y-8">
                 <input type="hidden" id="edit-stu-id">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-2">Họ và Tên</label>
-                    <input type="text" id="stuName" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#6366f1] focus:bg-white font-bold text-xl text-[#0f172a] transition-all">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-3">Họ và Tên</label>
+                    <input type="text" id="stuName" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#4f46e5] focus:bg-white font-bold text-xl text-[#1e1b4b] transition-all shadow-inner">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-2">Học phí / Buổi (VNĐ)</label>
-                    <input type="number" id="stuFee" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#6366f1] focus:bg-white font-bold text-xl text-[#0f172a] transition-all">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-3">Mức Học phí (VNĐ/Buổi)</label>
+                    <input type="number" id="stuFee" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#4f46e5] focus:bg-white font-bold text-xl text-[#1e1b4b] transition-all shadow-inner">
                 </div>
                 <div class="flex justify-between items-center mt-12 pt-8 border-t border-slate-100">
-                    <button type="button" id="btnDeleteStudent" onclick="deleteCurrentStudent()" class="text-[#ef4444] hover:bg-rose-50 px-6 py-4 rounded-2xl font-bold transition-colors hidden"><i class="fas fa-trash-alt mr-2"></i> Xóa Học Viên</button>
+                    <button type="button" id="btnDeleteStudent" onclick="deleteCurrentStudent()" class="text-rose-500 hover:bg-rose-50 px-6 py-4 rounded-2xl font-bold transition-colors hidden"><i class="fas fa-trash-alt mr-2"></i> Xóa Học Viên</button>
                     <div class="flex gap-4 ml-auto">
-                        <button type="button" onclick="closeModal('modal-student')" class="px-8 py-4 rounded-[20px] font-bold text-slate-500 hover:bg-slate-100 transition-colors">Đóng</button>
-                        <button type="submit" class="px-10 py-4 bg-[#6366f1] text-white rounded-[20px] font-bold hover:bg-[#4f46e5] btn-modern text-lg">Lưu Hồ Sơ</button>
+                        <button type="button" onclick="closeModal('modal-student')" class="px-8 py-4 rounded-[20px] font-bold text-slate-500 hover:bg-slate-100 transition-colors text-lg">Đóng</button>
+                        <button type="submit" class="px-10 py-4 bg-[#4f46e5] text-white rounded-[20px] font-bold hover:bg-[#4338ca] btn-modern text-lg">Lưu Hồ Sơ</button>
                     </div>
                 </div>
             </form>
@@ -369,54 +369,54 @@
     </div>
 
     <!-- Modal Sửa Tên Lớp -->
-    <div id="modal-class" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay opacity-0 pointer-events-none bg-slate-900/50 backdrop-blur-md">
-        <div class="bg-white rounded-[40px] w-full max-w-md p-12 modal-content shadow-[0_30px_60px_rgba(0,0,0,0.15)] border border-white">
-            <h3 class="text-4xl font-extrabold font-display mb-10 text-[#0f172a]">Thiết Lập Lớp</h3>
+    <div id="modal-class" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay opacity-0 pointer-events-none bg-slate-900/60 backdrop-blur-md">
+        <div class="bg-white rounded-[40px] w-full max-w-md p-12 modal-content shadow-[0_30px_60px_rgba(0,0,0,0.15)] border border-slate-100">
+            <h3 class="text-4xl font-bold font-display mb-10 text-[#1e1b4b]">Thiết Lập Lớp</h3>
             <form onsubmit="submitEditClass(event)" class="space-y-8">
                 <input type="hidden" id="edit-cls-id">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-2">Tên Lớp</label>
-                    <input type="text" id="editClsName" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#6366f1] focus:bg-white font-bold text-2xl uppercase text-[#0f172a] transition-all">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-3">Tên Lớp</label>
+                    <input type="text" id="editClsName" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#4f46e5] focus:bg-white font-bold text-2xl uppercase text-[#1e1b4b] transition-all shadow-inner">
                 </div>
                 <div class="flex justify-end gap-4 mt-12 pt-8 border-t border-slate-100">
-                    <button type="button" onclick="closeModal('modal-class')" class="px-8 py-4 rounded-[20px] font-bold text-slate-500 hover:bg-slate-100 transition-colors">Hủy</button>
-                    <button type="submit" class="px-10 py-4 bg-[#6366f1] text-white rounded-[20px] font-bold hover:bg-[#4f46e5] btn-modern text-lg">Cập Nhật</button>
+                    <button type="button" onclick="closeModal('modal-class')" class="px-8 py-4 rounded-[20px] font-bold text-slate-500 hover:bg-slate-100 transition-colors text-lg">Hủy</button>
+                    <button type="submit" class="px-10 py-4 bg-[#4f46e5] text-white rounded-[20px] font-bold hover:bg-[#4338ca] btn-modern text-lg">Cập Nhật</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Modal Buổi Học -->
-    <div id="modal-session" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay opacity-0 pointer-events-none bg-slate-900/50 backdrop-blur-md">
-        <div class="bg-white rounded-[40px] w-full max-w-3xl p-12 modal-content shadow-[0_30px_60px_rgba(0,0,0,0.15)] border border-white">
-            <h3 class="text-4xl font-extrabold font-display mb-10 text-[#0f172a]" id="session-modal-title">Điểm Danh Học Viên</h3>
+    <div id="modal-session" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay opacity-0 pointer-events-none bg-slate-900/60 backdrop-blur-md">
+        <div class="bg-white rounded-[40px] w-full max-w-3xl p-12 modal-content shadow-[0_30px_60px_rgba(0,0,0,0.15)] border border-slate-100">
+            <h3 class="text-4xl font-bold font-display mb-10 text-[#1e1b4b]" id="session-modal-title">Ghi Nhận Đánh Giá</h3>
             <form onsubmit="submitSession(event)" class="space-y-8">
                 <input type="hidden" id="session-id">
                 
                 <div class="grid grid-cols-2 gap-8">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-2">Ngày học</label>
-                        <input type="date" id="sesDate" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#6366f1] focus:bg-white font-bold text-lg text-[#0f172a] transition-all">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-3">Ngày học</label>
+                        <input type="date" id="sesDate" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#4f46e5] focus:bg-white font-bold text-lg text-[#1e1b4b] transition-all shadow-inner">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-2">Môn / Kỹ năng</label>
-                        <input type="text" id="sesContent" placeholder="VD: READING" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#6366f1] focus:bg-white uppercase font-bold text-lg text-[#0f172a] transition-all">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-3">Phân Môn / Kỹ năng</label>
+                        <input type="text" id="sesContent" placeholder="VD: READING" required class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#4f46e5] focus:bg-white uppercase font-bold text-lg text-[#1e1b4b] transition-all shadow-inner">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-2">Nội dung bài học</label>
-                    <input type="text" id="sesLesson" placeholder="VD: MULTIPLE CHOICE" class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#6366f1] focus:bg-white uppercase font-bold text-lg text-[#0f172a] transition-all">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-3">Nội dung bài học</label>
+                    <input type="text" id="sesLesson" placeholder="VD: MULTIPLE CHOICE" class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#4f46e5] focus:bg-white uppercase font-bold text-lg text-[#1e1b4b] transition-all shadow-inner">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-2">Đánh giá của Giáo viên</label>
-                    <textarea id="sesRemarks" rows="5" class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#6366f1] focus:bg-white font-medium text-lg text-[#0f172a] leading-relaxed resize-none transition-all" placeholder="- Học sinh hiểu bài tốt..."></textarea>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[2px] mb-3 pl-3">Đánh giá của Giáo viên</label>
+                    <textarea id="sesRemarks" rows="5" class="w-full bg-[#f8fafc] border-2 border-transparent rounded-[24px] p-6 outline-none focus:border-[#4f46e5] focus:bg-white font-medium text-lg text-[#1e1b4b] leading-relaxed resize-none transition-all shadow-inner" placeholder="- Học sinh hiểu bài tốt..."></textarea>
                 </div>
 
                 <div class="flex justify-end gap-4 mt-12 pt-8 border-t border-slate-100">
                     <button type="button" onclick="closeModal('modal-session')" class="px-8 py-4 rounded-[20px] font-bold text-slate-500 hover:bg-slate-100 transition-colors text-lg">Hủy Bỏ</button>
-                    <button type="submit" class="px-12 py-4 bg-[#6366f1] text-white rounded-[20px] font-bold hover:bg-[#4f46e5] btn-modern text-lg shadow-[0_10px_20px_rgba(99,102,241,0.3)]">Lưu Thông Tin</button>
+                    <button type="submit" class="px-12 py-4 bg-[#4f46e5] text-white rounded-[20px] font-bold hover:bg-[#4338ca] btn-modern text-lg shadow-[0_10px_20px_rgba(79,70,229,0.3)]">Lưu Đánh Giá</button>
                 </div>
             </form>
         </div>
@@ -424,12 +424,13 @@
 
 
     <script>
-        // DATA NỀN TẢNG (GIỮ NGUYÊN KHÓA V7 ĐỂ ĐỒNG BỘ DỮ LIỆU ĐÃ NHẬP CỦA BẠN - VÀ LOAD DỮ LIỆU FILE ĐIỂM DANH_3)
-        // Hệ thống sẽ lấy data thật từ máy bạn. Nếu chưa có, nó sẽ nạp data gốc từ file Excel của bạn (Tháng 7/2026).
-        const EXCEL_DATA = {"classes": [{"id": "c1", "name": "IELTS"}, {"id": "c2", "name": "ĐĂNG"}, {"id": "c3", "name": "TÂM"}, {"id": "c4", "name": "TA 9 - OFF"}, {"id": "c5", "name": "TA 9 - ONL"}, {"id": "c6", "name": "TA 12"}, {"id": "c7", "name": "TUẤN"}], "students": [{"id": "s1", "classId": "c1", "name": "Ngọc Diệp", "fee": 100000, "debt": 0}, {"id": "s2", "classId": "c1", "name": "Linh Nga", "fee": 100000, "debt": 0}, {"id": "s3", "classId": "c1", "name": "Thảo Nguyên", "fee": 100000, "debt": 0}, {"id": "s4", "classId": "c1", "name": "Thuỷ Trúc", "fee": 100000, "debt": 0}, {"id": "s5", "classId": "c2", "name": "Hải Đăng", "fee": 150000, "debt": 0}, {"id": "s6", "classId": "c3", "name": "Minh Tâm", "fee": 150000, "debt": 0}, {"id": "s7", "classId": "c4", "name": "Nhật Nam", "fee": 200000, "debt": 0}, {"id": "s8", "classId": "c4", "name": "Trường Hải", "fee": 200000, "debt": 0}, {"id": "s9", "classId": "c5", "name": "Quang Minh", "fee": 100000, "debt": 0}, {"id": "s10", "classId": "c5", "name": "Anh Quân", "fee": 100000, "debt": 0}, {"id": "s11", "classId": "c5", "name": "Thanh Vân", "fee": 100000, "debt": 0}, {"id": "s12", "classId": "c5", "name": "Minh Nhật", "fee": 100000, "debt": 0}, {"id": "s13", "classId": "c5", "name": "Quang Hùng", "fee": 100000, "debt": 0}, {"id": "s14", "classId": "c6", "name": "Minh Anh", "fee": 100000, "debt": 0}, {"id": "s15", "classId": "c6", "name": "Tuấn Anh", "fee": 100000, "debt": 0}, {"id": "s16", "classId": "c6", "name": "Trí Thiện", "fee": 100000, "debt": 0}, {"id": "s17", "classId": "c7", "name": "Phạm Tuấn (1)", "fee": 150000, "debt": 0}, {"id": "s18", "classId": "c7", "name": "Phạm Tuấn (2)", "fee": 170000, "debt": 0}], "sessions": [{"id": "ses1", "studentId": "s1", "date": "2026-07-01", "content": "READING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses2", "studentId": "s1", "date": "2026-07-05", "content": "READING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": "-Đã hoàn thiện BTVN"}, {"id": "ses3", "studentId": "s1", "date": "2026-07-08", "content": "LISTENING", "lesson": "MULTIPLE CHOICE", "remarks": "-Tích cực tương tác, tham gia phản biện"}, {"id": "ses4", "studentId": "s1", "date": "2026-07-12", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": "-Đã hoàn thiện BTVN"}, {"id": "ses5", "studentId": "s1", "date": "2026-07-15", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN", "remarks": ""}, {"id": "ses6", "studentId": "s1", "date": "2026-07-19", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN (TIẾP)", "remarks": "-Đã hoàn thiện BTVN"}, {"id": "ses7", "studentId": "s2", "date": "2026-07-01", "content": "READING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses8", "studentId": "s2", "date": "2026-07-05", "content": "READING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": ""}, {"id": "ses9", "studentId": "s2", "date": "2026-07-08", "content": "LISTENING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses10", "studentId": "s2", "date": "2026-07-12", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": ""}, {"id": "ses11", "studentId": "s2", "date": "2026-07-15", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN", "remarks": ""}, {"id": "ses12", "studentId": "s2", "date": "2026-07-19", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN (TIẾP)", "remarks": ""}, {"id": "ses13", "studentId": "s3", "date": "2026-07-08", "content": "LISTENING", "lesson": "MULTIPLE CHOICE", "remarks": "-Tích cực tương tác, tham gia phản biện"}, {"id": "ses14", "studentId": "s3", "date": "2026-07-12", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": "-Có tương với bài"}, {"id": "ses15", "studentId": "s3", "date": "2026-07-16", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (BÙ 1-1)", "remarks": "-Bước đầu xác định được từ khoá"}, {"id": "ses16", "studentId": "s3", "date": "2026-07-19", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN (TIẾP)", "remarks": "-Chưa hoàn thiện BTVN"}, {"id": "ses17", "studentId": "s4", "date": "2026-07-01", "content": "READING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses18", "studentId": "s4", "date": "2026-07-05", "content": "READING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": ""}, {"id": "ses19", "studentId": "s4", "date": "2026-07-08", "content": "LISTENING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses20", "studentId": "s4", "date": "2026-07-12", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": "-Có tương tác với bài"}, {"id": "ses21", "studentId": "s4", "date": "2026-07-15", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN", "remarks": ""}, {"id": "ses22", "studentId": "s4", "date": "2026-07-19", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN (TIẾP)", "remarks": "-Đã hoàn thiện BTVN"}, {"id": "ses23", "studentId": "s5", "date": "2026-07-16", "content": "READING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses24", "studentId": "s6", "date": "2026-07-03", "content": "TASK 1", "lesson": "TỔNG QUAN VỀ WRITING", "remarks": ""}, {"id": "ses25", "studentId": "s6", "date": "2026-07-06", "content": "TASK 2", "lesson": "TỔNG QUAN VỀ WRITING", "remarks": ""}, {"id": "ses26", "studentId": "s6", "date": "2026-07-13", "content": "TASK 1", "lesson": "DYNAMIC CHART", "remarks": ""}, {"id": "ses27", "studentId": "s6", "date": "2026-07-15", "content": "TASK 1", "lesson": "STATIC CHART", "remarks": ""}, {"id": "ses28", "studentId": "s6", "date": "2026-07-17", "content": "TASK 2", "lesson": "THEMATIC PROGRESSION", "remarks": ""}, {"id": "ses29", "studentId": "s7", "date": "2026-07-03", "content": "NGỮ PHÁP", "lesson": "TRẬT TỰ CỦA TÍNH TỪ", "remarks": ""}, {"id": "ses30", "studentId": "s7", "date": "2026-07-10", "content": "NGỮ PHÁP", "lesson": "MẠO TỪ", "remarks": ""}, {"id": "ses31", "studentId": "s7", "date": "2026-07-17", "content": "NGỮ PHÁP", "lesson": "CẤU TẠO TỪ", "remarks": ""}, {"id": "ses32", "studentId": "s8", "date": "2026-07-03", "content": "NGỮ PHÁP", "lesson": "TRẬT TỰ CỦA TÍNH TỪ", "remarks": ""}, {"id": "ses33", "studentId": "s8", "date": "2026-07-10", "content": "NGỮ PHÁP", "lesson": "MẠO TỪ", "remarks": ""}, {"id": "ses34", "studentId": "s8", "date": "2026-07-17", "content": "NGỮ PHÁP", "lesson": "CẤU TẠO TỪ", "remarks": ""}, {"id": "ses35", "studentId": "s9", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses36", "studentId": "s9", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses37", "studentId": "s9", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses38", "studentId": "s9", "date": "2026-07-14", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses39", "studentId": "s10", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses40", "studentId": "s10", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses41", "studentId": "s10", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses42", "studentId": "s10", "date": "2026-07-14", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses43", "studentId": "s11", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses44", "studentId": "s11", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses45", "studentId": "s11", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses46", "studentId": "s11", "date": "2026-07-14", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses47", "studentId": "s12", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses48", "studentId": "s12", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses49", "studentId": "s12", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt"}, {"id": "ses50", "studentId": "s13", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses51", "studentId": "s13", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": ""}, {"id": "ses52", "studentId": "s14", "date": "2026-07-02", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": ""}, {"id": "ses53", "studentId": "s14", "date": "2026-07-04", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": "-Tương tác chưa đạt yêu cầu"}, {"id": "ses54", "studentId": "s14", "date": "2026-07-08", "content": "NGỮ PHÁP", "lesson": "ĐỘNG TỪ KHUYẾT THIẾU (1)", "remarks": "-Tương tác tốt"}, {"id": "ses55", "studentId": "s14", "date": "2026-07-16", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (1)", "remarks": ""}, {"id": "ses56", "studentId": "s14", "date": "2026-07-18", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (2)", "remarks": "-Tương tác tốt với bài"}, {"id": "ses57", "studentId": "s15", "date": "2026-07-02", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": ""}, {"id": "ses58", "studentId": "s15", "date": "2026-07-04", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": "-20h-21h30"}, {"id": "ses59", "studentId": "s15", "date": "2026-07-08", "content": "NGỮ PHÁP", "lesson": "ĐỘNG TỪ KHUYẾT THIẾU (1)", "remarks": "-Tương tác tốt"}, {"id": "ses60", "studentId": "s15", "date": "2026-07-11", "content": "NGỮ PHÁP", "lesson": "ĐỘNG TỪ KHUYẾT THIẾU (2)", "remarks": "-Áp dụng tương đối ổn lý thuyết"}, {"id": "ses61", "studentId": "s15", "date": "2026-07-16", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (1)", "remarks": ""}, {"id": "ses62", "studentId": "s15", "date": "2026-07-18", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (2)", "remarks": "-Tương tác tốt với bài"}, {"id": "ses63", "studentId": "s16", "date": "2026-07-02", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": ""}, {"id": "ses64", "studentId": "s16", "date": "2026-07-04", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": "-Tương tác chưa đạt yêu cầu"}, {"id": "ses65", "studentId": "s16", "date": "2026-07-11", "content": "NGỮ PHÁP", "lesson": "ĐỘNG TỪ KHUYẾT THIẾU (2)", "remarks": "-Áp dụng tương đối ổn lý thuyết"}, {"id": "ses66", "studentId": "s16", "date": "2026-07-18", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (2)", "remarks": "-Tương tác tốt với bài"}, {"id": "ses67", "studentId": "s17", "date": "2026-07-07", "content": "READING", "lesson": "READ - 02", "remarks": ""}, {"id": "ses68", "studentId": "s17", "date": "2026-07-15", "content": "READING", "lesson": "READ - 03", "remarks": ""}, {"id": "ses69", "studentId": "s18", "date": "2026-07-07", "content": "READING", "lesson": "READ - 02", "remarks": ""}, {"id": "ses70", "studentId": "s18", "date": "2026-07-15", "content": "READING", "lesson": "READ - 03", "remarks": ""}]};
+        // DATA NỀN TẢNG (100% Data từ Markdown tháng 7 của bạn)
+        const EXCEL_DATA = {"classes": [{"id": "c1", "name": "IELTS"}, {"id": "c2", "name": "ĐĂNG"}, {"id": "c3", "name": "TÂM"}, {"id": "c4", "name": "TA 9 - OFF"}, {"id": "c5", "name": "TA 9 - ONL"}, {"id": "c6", "name": "TA 12"}, {"id": "c7", "name": "TUẤN"}], "students": [{"id": "s1", "classId": "c1", "name": "Ngọc Diệp", "fee": 100000, "debt": 0}, {"id": "s2", "classId": "c1", "name": "Linh Nga", "fee": 100000, "debt": 0}, {"id": "s3", "classId": "c1", "name": "Thảo Nguyên", "fee": 100000, "debt": 0}, {"id": "s4", "classId": "c1", "name": "Thuỷ Trúc", "fee": 100000, "debt": 0}, {"id": "s5", "classId": "c2", "name": "Hải Đăng", "fee": 150000, "debt": 0}, {"id": "s6", "classId": "c3", "name": "Minh Tâm", "fee": 150000, "debt": 0}, {"id": "s7", "classId": "c4", "name": "Nhật Nam", "fee": 200000, "debt": 0}, {"id": "s8", "classId": "c4", "name": "Trường Hải", "fee": 200000, "debt": 0}, {"id": "s9", "classId": "c5", "name": "Quang Minh", "fee": 100000, "debt": 0}, {"id": "s10", "classId": "c5", "name": "Anh Quân", "fee": 100000, "debt": 0}, {"id": "s11", "classId": "c5", "name": "Thanh Vân", "fee": 100000, "debt": 0}, {"id": "s12", "classId": "c5", "name": "Minh Nhật", "fee": 100000, "debt": 0}, {"id": "s13", "classId": "c5", "name": "Quang Hùng", "fee": 100000, "debt": 0}, {"id": "s14", "classId": "c6", "name": "Minh Anh", "fee": 100000, "debt": 0}, {"id": "s15", "classId": "c6", "name": "Tuấn Anh", "fee": 100000, "debt": 0}, {"id": "s16", "classId": "c6", "name": "Trí Thiện", "fee": 100000, "debt": 0}, {"id": "s17", "classId": "c7", "name": "Phạm Tuấn (Ca 1)", "fee": 150000, "debt": 0}, {"id": "s18", "classId": "c7", "name": "Phạm Tuấn (Ca 2)", "fee": 170000, "debt": 0}], "sessions": [{"id": "ses1", "studentId": "s1", "date": "2026-07-01", "content": "READING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses2", "studentId": "s1", "date": "2026-07-05", "content": "READING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": "-Đã hoàn thiện BTVN"}, {"id": "ses3", "studentId": "s1", "date": "2026-07-08", "content": "LISTENING", "lesson": "MULTIPLE CHOICE", "remarks": "-Tích cực tương tác, tham gia phản biện"}, {"id": "ses4", "studentId": "s1", "date": "2026-07-12", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": "-Đã hoàn thiện BTVN\n-Tương tốt với bài\n-Tỉ lệ đúng cao"}, {"id": "ses5", "studentId": "s1", "date": "2026-07-15", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN", "remarks": ""}, {"id": "ses6", "studentId": "s1", "date": "2026-07-19", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN (TIẾP)", "remarks": "-Đã hoàn thiện BTVN\n-Tương tốt với bài"}, {"id": "ses7", "studentId": "s2", "date": "2026-07-01", "content": "READING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses8", "studentId": "s2", "date": "2026-07-05", "content": "READING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": ""}, {"id": "ses9", "studentId": "s2", "date": "2026-07-08", "content": "LISTENING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses10", "studentId": "s2", "date": "2026-07-12", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": ""}, {"id": "ses11", "studentId": "s2", "date": "2026-07-15", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN", "remarks": ""}, {"id": "ses12", "studentId": "s2", "date": "2026-07-19", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN (TIẾP)", "remarks": ""}, {"id": "ses13", "studentId": "s3", "date": "2026-07-08", "content": "LISTENING", "lesson": "MULTIPLE CHOICE", "remarks": "-Tích cực tương tác, tham gia phản biện"}, {"id": "ses14", "studentId": "s3", "date": "2026-07-12", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": "-Có tương với bài\n-Chưa hoàn thiện BTVN\n-Kỹ năng nghe còn yếu"}, {"id": "ses15", "studentId": "s3", "date": "2026-07-16", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (BÙ 1-1)", "remarks": "-Bước đầu xác định được từ khoá\n-Từ vựng còn hạn chế -> chưa hiểu sâu nội dung\n-Tuân thủ đúng các bước làm bài"}, {"id": "ses16", "studentId": "s3", "date": "2026-07-19", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN (TIẾP)", "remarks": "-Chưa hoàn thiện BTVN\n-Tương tốt với bài"}, {"id": "ses17", "studentId": "s4", "date": "2026-07-01", "content": "READING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses18", "studentId": "s4", "date": "2026-07-05", "content": "READING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": ""}, {"id": "ses19", "studentId": "s4", "date": "2026-07-08", "content": "LISTENING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses20", "studentId": "s4", "date": "2026-07-12", "content": "LISTENING", "lesson": "MULTIPLE CHOICE (TIẾP)", "remarks": "-Có tương tác với bài\n-Chưa hoàn thiện BTVN\n-Tỉ lệ đúng khá ổn"}, {"id": "ses21", "studentId": "s4", "date": "2026-07-15", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN", "remarks": ""}, {"id": "ses22", "studentId": "s4", "date": "2026-07-19", "content": "READING", "lesson": "TRUE/FALSE/NOT GIVEN (TIẾP)", "remarks": "-Đã hoàn thiện BTVN\n-Tương tác kém, chưa tích cực"}, {"id": "ses23", "studentId": "s5", "date": "2026-07-16", "content": "READING", "lesson": "MULTIPLE CHOICE", "remarks": ""}, {"id": "ses24", "studentId": "s6", "date": "2026-07-03", "content": "TASK 1", "lesson": "TỔNG QUAN VỀ WRITING", "remarks": ""}, {"id": "ses25", "studentId": "s6", "date": "2026-07-06", "content": "TASK 2", "lesson": "TỔNG QUAN VỀ WRITING", "remarks": ""}, {"id": "ses26", "studentId": "s6", "date": "2026-07-13", "content": "TASK 1", "lesson": "DYNAMIC CHART", "remarks": ""}, {"id": "ses27", "studentId": "s6", "date": "2026-07-15", "content": "TASK 1", "lesson": "STATIC CHART", "remarks": ""}, {"id": "ses28", "studentId": "s6", "date": "2026-07-17", "content": "TASK 2", "lesson": "THEMATIC PROGRESSION", "remarks": ""}, {"id": "ses29", "studentId": "s7", "date": "2026-07-03", "content": "NGỮ PHÁP", "lesson": "TRẬT TỰ CỦA TÍNH TỪ", "remarks": ""}, {"id": "ses30", "studentId": "s7", "date": "2026-07-10", "content": "NGỮ PHÁP", "lesson": "MẠO TỪ", "remarks": ""}, {"id": "ses31", "studentId": "s7", "date": "2026-07-17", "content": "NGỮ PHÁP", "lesson": "CẤU TẠO TỪ", "remarks": ""}, {"id": "ses32", "studentId": "s8", "date": "2026-07-03", "content": "NGỮ PHÁP", "lesson": "TRẬT TỰ CỦA TÍNH TỪ", "remarks": ""}, {"id": "ses33", "studentId": "s8", "date": "2026-07-10", "content": "NGỮ PHÁP", "lesson": "MẠO TỪ", "remarks": ""}, {"id": "ses34", "studentId": "s8", "date": "2026-07-17", "content": "NGỮ PHÁP", "lesson": "CẤU TẠO TỪ", "remarks": ""}, {"id": "ses35", "studentId": "s9", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses36", "studentId": "s9", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt\n-Áp dụng được lý thuyết vào bài"}, {"id": "ses37", "studentId": "s9", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt\n-Hoàn thành BTVN"}, {"id": "ses38", "studentId": "s9", "date": "2026-07-14", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ", "remarks": "-Tương tác với lớp tốt\n-Hoàn thành BTVN"}, {"id": "ses39", "studentId": "s10", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses40", "studentId": "s10", "date": "2026-07-07", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt\n-Áp dụng được lý thuyết vào bài\n-Hoàn thành tốt BTVN"}, {"id": "ses41", "studentId": "s10", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt\n-Hoàn thành BTVN"}, {"id": "ses42", "studentId": "s10", "date": "2026-07-14", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ", "remarks": "-Tương tác với lớp tốt\n-Hoàn thành BTVN"}, {"id": "ses43", "studentId": "s11", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses44", "studentId": "s11", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt\n-Áp dụng được lý thuyết vào bài\n-Hoàn thành tốt BTVN"}, {"id": "ses45", "studentId": "s11", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt\n-Hoàn thành BTVN"}, {"id": "ses46", "studentId": "s11", "date": "2026-07-14", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ", "remarks": "-Tương tác với lớp tốt\n-Hoàn thành BTVN"}, {"id": "ses47", "studentId": "s12", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses48", "studentId": "s12", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt\n-Áp dụng được lý thuyết vào bài\n-Hoàn thành tốt BTVN"}, {"id": "ses49", "studentId": "s12", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": "-Tương tác với lớp tốt\n-Hoàn thành BTVN"}, {"id": "ses50", "studentId": "s13", "date": "2026-07-05", "content": "NGỮ PHÁP", "lesson": "PHÁT ÂM", "remarks": ""}, {"id": "ses51", "studentId": "s13", "date": "2026-07-12", "content": "NGỮ PHÁP", "lesson": "TRỌNG ÂM", "remarks": ""}, {"id": "ses52", "studentId": "s14", "date": "2026-07-02", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": ""}, {"id": "ses53", "studentId": "s14", "date": "2026-07-04", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": "-Tương tác chưa đạt yêu cầu\n-Đã hoàn thiện BTVN"}, {"id": "ses54", "studentId": "s14", "date": "2026-07-08", "content": "NGỮ PHÁP", "lesson": "ĐỘNG TỪ KHUYẾT THIẾU (1)", "remarks": "-Tương tác tốt\n-Đã hoàn thiện BTVN"}, {"id": "ses55", "studentId": "s14", "date": "2026-07-16", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (1)", "remarks": ""}, {"id": "ses56", "studentId": "s14", "date": "2026-07-18", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (2)", "remarks": "-Tương tác tốt với bài\n-Áp dụng được lý thuyết vào bài\n-Hoàn thành tốt BTVN"}, {"id": "ses57", "studentId": "s15", "date": "2026-07-02", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": "-20h-21h30"}, {"id": "ses58", "studentId": "s15", "date": "2026-07-04", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": "-20h-21h30\n-Đã làm BTVN\n-Tương tác đạt yêu cầu"}, {"id": "ses59", "studentId": "s15", "date": "2026-07-08", "content": "NGỮ PHÁP", "lesson": "ĐỘNG TỪ KHUYẾT THIẾU (1)", "remarks": "-Tương tác tốt\n-Đã hoàn thiện BTVN"}, {"id": "ses60", "studentId": "s15", "date": "2026-07-11", "content": "NGỮ PHÁP", "lesson": "ĐỘNG TỪ KHUYẾT THIẾU (2)", "remarks": "-Áp dụng tương đối ổn lý thuyết\n-Đã hoàn thiện BTVN"}, {"id": "ses61", "studentId": "s15", "date": "2026-07-16", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (1)", "remarks": ""}, {"id": "ses62", "studentId": "s15", "date": "2026-07-18", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (2)", "remarks": "-Tương tác tốt với bài\n-Áp dụng được lý thuyết vào bài\n-Hoàn thành tốt BTVN"}, {"id": "ses63", "studentId": "s16", "date": "2026-07-02", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": ""}, {"id": "ses64", "studentId": "s16", "date": "2026-07-04", "content": "NGỮ PHÁP", "lesson": "SỰ HOÀ HỢP GIỮA CHỦ NGỮ VÀ VỊ NGỮ (1)", "remarks": "-Tương tác chưa đạt yêu cầu\n-Chưa làm BTVN"}, {"id": "ses65", "studentId": "s16", "date": "2026-07-11", "content": "NGỮ PHÁP", "lesson": "ĐỘNG TỪ KHUYẾT THIẾU (2)", "remarks": "-Áp dụng tương đối ổn lý thuyết\n-Chưa làm BTVN\n-Tương tác đạt yêu cầu"}, {"id": "ses66", "studentId": "s16", "date": "2026-07-18", "content": "NGỮ PHÁP", "lesson": "DANH ĐỘNG TỪ VÀ ĐỘNG TỪ NGUYÊN MẪU (2)", "remarks": "-Tương tác tốt với bài\n-Áp dụng được lý thuyết vào bài"}, {"id": "ses67", "studentId": "s17", "date": "2026-07-07", "content": "READING", "lesson": "READ - 02", "remarks": ""}, {"id": "ses68", "studentId": "s17", "date": "2026-07-15", "content": "READING", "lesson": "READ - 03", "remarks": ""}, {"id": "ses69", "studentId": "s18", "date": "2026-07-07", "content": "READING", "lesson": "READ - 02", "remarks": "-10h-11h30"}, {"id": "ses70", "studentId": "s18", "date": "2026-07-15", "content": "READING", "lesson": "READ - 03", "remarks": "-9h-10h30"}]};
 
-        function getDB() { const data = localStorage.getItem('eduDB_V7'); if (!data) { localStorage.setItem('eduDB_V7', JSON.stringify(EXCEL_DATA)); return EXCEL_DATA; } return JSON.parse(data); }
-        function saveDB(data) { localStorage.setItem('eduDB_V7', JSON.stringify(data)); }
+        // Nếu máy bạn chưa có DB (Lần đầu mở web), nó sẽ nạp EXCEL_DATA vào.
+        // Tôi đổi khóa thành V8 để BẮT BUỘC trình duyệt của bạn nạp lại lượng dữ liệu mới khổng lồ này.
+        function getDB() { const data = localStorage.getItem('eduDB_V8'); if (!data) { localStorage.setItem('eduDB_V8', JSON.stringify(EXCEL_DATA)); return EXCEL_DATA; } return JSON.parse(data); }
+        function saveDB(data) { localStorage.setItem('eduDB_V8', JSON.stringify(data)); }
         function genId() { return Math.random().toString(36).substr(2, 9); }
         function formatMoney(n) { return (n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
         function parseDate(d) { if(!d) return ''; const p = d.split('-'); return `${p[2]}/${p[1]}`; } 
@@ -499,13 +500,13 @@
                     <tr class="hover:bg-slate-50 transition-colors border-b border-slate-50">
                         <td class="p-6 pl-8 font-bold text-[#1e1b4b] break-words-custom max-w-[250px]"><i class="fas fa-cube text-slate-300 mr-3"></i> ${cls.name}</td>
                         <td class="p-6 text-center font-bold text-slate-500">${classStus.length}</td>
-                        <td class="p-6 text-right font-bold font-display text-[#ef4444] whitespace-nowrap">${formatMoney(clsDebt)} đ</td>
+                        <td class="p-6 text-right font-bold font-display text-rose-500 whitespace-nowrap">${formatMoney(clsDebt)} đ</td>
                         <td class="p-6 pr-8 text-right font-bold font-display text-[#4f46e5] whitespace-nowrap">${formatMoney(clsRev)} đ</td>
                     </tr>`;
             });
         }
 
-        // QUẢN LÝ LỚP 
+        // QUẢN LÝ LỚP (Thêm nút di chuyển)
         function renderManageClasses() {
             const db = getDB(), list = document.getElementById('manage-class-list'); list.innerHTML = '';
             db.classes.forEach((cls, index) => {
@@ -516,12 +517,13 @@
                             ${cls.name}
                         </span>
                         <div class="flex items-center gap-2 shrink-0">
+                            <!-- Nút Di chuyển -->
                             <div class="flex flex-col border-r border-slate-200 pr-4 mr-2">
                                 <button onclick="moveClass(${index}, -1)" class="text-slate-400 hover:text-[#4f46e5] text-base leading-none p-1.5 transition-colors"><i class="fas fa-chevron-up"></i></button>
                                 <button onclick="moveClass(${index}, 1)" class="text-slate-400 hover:text-[#4f46e5] text-base leading-none p-1.5 transition-colors"><i class="fas fa-chevron-down"></i></button>
                             </div>
                             <button onclick="openEditClassModal('${cls.id}')" class="text-[#4f46e5] bg-white shadow-sm border border-slate-100 hover:shadow-md w-14 h-14 rounded-2xl transition-all text-xl" title="Sửa tên lớp"><i class="fas fa-pen"></i></button>
-                            <button onclick="deleteClass('${cls.id}')" class="text-[#ef4444] bg-white shadow-sm border border-slate-100 hover:shadow-md w-14 h-14 rounded-2xl transition-all text-xl ml-2" title="Xóa lớp"><i class="fas fa-trash"></i></button>
+                            <button onclick="deleteClass('${cls.id}')" class="text-rose-500 bg-white shadow-sm border border-slate-100 hover:shadow-md w-14 h-14 rounded-2xl transition-all text-xl ml-2" title="Xóa lớp"><i class="fas fa-trash"></i></button>
                         </div>
                     </li>`;
             });
@@ -582,7 +584,7 @@
         }
         window.switchStudent = function(id) { currentStudentId = id; const db = getDB(); const stus = db.students.filter(s => s.classId === currentClassId); renderTabs(stus); };
 
-        // RENDER BẢNG ĐIỂM DANH
+        // RENDER BẢNG ĐIỂM DANH (Không giới hạn chiều cao)
         function renderStudent() {
             const db = getDB(), stu = db.students.find(s => s.id === currentStudentId);
             document.getElementById('stu-name-display').innerText = stu.name; document.getElementById('stu-avatar').innerText = stu.name.charAt(0);
@@ -602,14 +604,14 @@
             sessions.forEach(ses => {
                 const remarksHtml = ses.remarks ? ses.remarks.replace(/\n/g, '<br>') : '';
                 tbody.innerHTML += `
-                    <tr class="table-row-3d hover:bg-slate-50 transition-colors">
-                        <td class="p-6 text-slate-500 font-bold text-base pl-8 whitespace-nowrap">${parseDate(ses.date)}</td>
+                    <tr class="table-row-3d">
+                        <td class="p-6 text-slate-500 font-bold text-base pl-12 whitespace-nowrap">${parseDate(ses.date)}</td>
                         <td class="p-6 text-[#1e1b4b] font-bold font-display text-base tracking-wide uppercase break-words-custom max-w-[200px]">${ses.content}</td>
                         <td class="p-6 text-slate-700 font-bold font-display text-base uppercase break-words-custom max-w-[250px]">${ses.lesson}</td>
                         <td class="p-6 text-base text-slate-600 leading-relaxed font-medium break-words-custom">${remarksHtml}</td>
-                        <td class="p-6 text-center no-export pr-8 whitespace-nowrap">
-                            <button onclick="editSession('${ses.id}')" class="text-[#4f46e5] bg-white border border-slate-200 hover:border-[#4f46e5] w-12 h-12 rounded-[16px] transition-all"><i class="fas fa-pen"></i></button>
-                            <button onclick="deleteSession('${ses.id}')" class="text-[#ef4444] bg-white border border-slate-200 hover:border-[#ef4444] w-12 h-12 rounded-[16px] transition-all ml-2"><i class="fas fa-trash"></i></button>
+                        <td class="p-6 text-center no-export pr-10 whitespace-nowrap">
+                            <button onclick="editSession('${ses.id}')" class="text-[#4f46e5] bg-white border border-slate-200 hover:border-[#4f46e5] w-12 h-12 rounded-[16px] transition-all shadow-sm"><i class="fas fa-pen"></i></button>
+                            <button onclick="deleteSession('${ses.id}')" class="text-rose-500 bg-white border border-slate-200 hover:border-rose-500 w-12 h-12 rounded-[16px] transition-all ml-2 shadow-sm"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>`;
             });
@@ -710,23 +712,23 @@
             if(e.key === 'Enter') { e.preventDefault(); const s = this.selectionStart, v = this.value; this.value = v.substring(0,s) + '\n- ' + v.substring(this.selectionEnd); this.selectionStart = this.selectionEnd = s + 3; }
         });
 
-        // XUẤT ẢNH BÁO CÁO NÉT CĂNG
+        // XUẤT ẢNH BÁO CÁO FULL SIZE, KHÔNG CẮT XÉN
         function exportToImage() {
             const area = document.getElementById('report-export-area'); const stuName = document.getElementById('stu-name-display').innerText;
             area.classList.add('export-mode'); document.querySelector('.print-title').classList.remove('hidden');
             
             setTimeout(() => {
                 html2canvas(area, { 
-                    scale: 3, // Độ phân giải siêu cao x3
+                    scale: 3, 
                     backgroundColor: '#ffffff', 
                     useCORS: true,
-                    windowWidth: 1200 // Ép chuẩn width để ảnh không bao giờ bị méo
+                    windowWidth: 1200 
                 }).then(canvas => {
                     area.classList.remove('export-mode'); document.querySelector('.print-title').classList.add('hidden');
                     const link = document.createElement('a'); link.download = `EduCore_Bao_Cao_${stuName.replace(/ /g, '_')}.png`;
                     link.href = canvas.toDataURL('image/png', 1.0); link.click();
                 });
-            }, 300); // Đợi CSS export-mode load xong hoàn toàn mới chụp
+            }, 300); 
         }
     </script>
 </body>

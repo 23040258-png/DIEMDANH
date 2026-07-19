@@ -586,7 +586,7 @@
             currentClassId = clsId; currentStudentId = null; renderSidebar();
             document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById('view-class-detail').classList.remove('hidden');
             const db = getDB(), cls = db.classes.find(c => c.id === clsId);
-            document.getElementById('currentViewTitle').innerText = 'Thông Tin Lớp Học'; document.getElementById('detail-class-name').innerText = cls.name;
+            document.getElementById('currentViewTitle').innerText = 'THÔNG TIN LỚP HỌC'; document.getElementById('detail-class-name').innerText = cls.name;
             
             const stus = db.students.filter(s => s.classId === clsId);
             const area = document.getElementById('report-export-area');
